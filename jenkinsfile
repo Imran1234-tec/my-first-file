@@ -1,6 +1,11 @@
 pipeline {
     agent any
     stages {
+        stage ('install') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
         stage('Build') {
             steps {
                 sh 'mvn build'
@@ -10,10 +15,22 @@ pipeline {
             steps {
                 sh 'mvn test' 
             }
+         stage('deploy') {
+             steps {
+                 sh 'mvn deploy'
+             }
+
+         }
             post {
                 always {
-                    junit 'target/surefire-reports/*.xml' 
-                }
+                    sh "echo pipeline completed"
+}
+            success {
+                sh "echo pipeline succeeded" 
+            }
+            failure {
+                  sh "echo build failed"
+            }
             }
         }
     }
